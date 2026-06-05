@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tideswell FC — TikTok Content Posting API Integration</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0a; color: #fff; min-height: 100vh; }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        h1 { font-size: 28px; margin-bottom: 8px; color: #fe2c55; }
+        h2 { font-size: 20px; margin: 32px 0 12px; border-bottom: 1px solid #333; padding-bottom: 8px; }
+        .subtitle { color: #888; margin-bottom: 32px; font-size: 14px; }
+        .card { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+        .card h3 { font-size: 16px; margin-bottom: 8px; color: #25f4ee; }
+        .card p { color: #ccc; font-size: 14px; line-height: 1.6; }
+        .step { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
+        .step-num { background: #fe2c55; color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+        .step-content h4 { font-size: 15px; margin-bottom: 4px; }
+        .step-content p { color: #aaa; font-size: 13px; line-height: 1.5; }
+        .flow { display: flex; flex-direction: column; gap: 12px; }
+        .flow-item { background: #1a1a1a; border: 1px solid #25f4ee; border-radius: 8px; padding: 14px 18px; display: flex; align-items: center; gap: 12px; }
+        .flow-arrow { text-align: center; color: #555; font-size: 20px; }
+        .badge { background: #25f4ee; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        .badge-red { background: #fe2c55; color: #fff; }
+        pre { background: #111; border: 1px solid #333; border-radius: 8px; padding: 16px; font-size: 13px; overflow-x: auto; color: #25f4ee; }
+        .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 12px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tideswell FC</h1>
+        <p class="subtitle">TikTok Content Posting API Integration Demo</p>
+
+        <div class="card">
+            <h3>📋 App Overview</h3>
+            <p>Tideswell FC is a sports media application that produces short-form soccer highlight content. We integrate with TikTok's <strong>Content Posting API</strong> to programmatically publish curated highlight clips directly to our TikTok account <strong>@tideswellfc</strong>.</p>
+        </div>
+
+        <h2>Integration Flow</h2>
+        <div class="flow">
+            <div class="flow-item">
+                <span class="badge">INPUT</span>
+                <span>Live match event data (goals, penalties, red cards) via API-Football</span>
+            </div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-item">
+                <span class="badge">PROCESS</span>
+                <span>Auto-generate vertical 9:16 highlight clips with captions &amp; transitions</span>
+            </div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-item">
+                <span class="badge badge-red">POST</span>
+                <span>Publish to TikTok via Content Posting API <strong>(video.publish scope)</strong></span>
+            </div>
+        </div>
+
+        <h2>Step-by-Step Demo</h2>
+
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <h4>OAuth Authentication</h4>
+                <p>User authorizes Tideswell FC via TikTok OAuth 2.0. We request the <code>video.publish</code> scope to post content on behalf of the authenticated user.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <h4>Content Generation</h4>
+                <p>Our pipeline detects match events, sources broadcast footage, and generates a 9:16 vertical highlight clip with animated captions, color correction, and SFX transitions.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <h4>Video Upload via Content Posting API</h4>
+                <p>We call <code>POST /v2/post/publish/video/init/</code> to initialize the upload, then chunk-upload the video file and call <code>POST /v2/post/publish/content/</code> to publish it.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+                <h4>Result</h4>
+                <p>The highlight clip appears on the @tideswellfc TikTok account automatically within minutes of a match event.</p>
+            </div>
+        </div>
+
+        <h2>API Endpoints Used</h2>
+        <pre>
+# Step 1: Initialize upload
+POST https://open.tiktokapis.com/v2/post/publish/video/init/
+Authorization: Bearer {access_token}
+Content-Type: application/json
+
+{
+  "source": "PUSH_UPLOAD",
+  "title": "⚽ Mbappé Goal — France vs Argentina",
+  "privacy_level": "PUBLIC_TO_EVERYONE"
+}
+
+# Step 2: Chunk upload video binary
+PUT {upload_url}
+Content-Range: bytes {start}-{end}/{total}
+Content-Type: video/mp4
+{video_binary_data}
+
+# Step 3: Publish
+POST https://open.tiktokapis.com/v2/post/publish/content/init/
+        </pre>
+
+        <h2>Products &amp; Scopes</h2>
+        <div class="card">
+            <p><strong>Product:</strong> Content Posting API</p>
+            <p><strong>Scope:</strong> <code>video.publish</code></p>
+        </div>
+
+        <div class="footer">
+            <p>Tideswell FC — TikTok for Developers Integration Demo</p>
+            <p>tideswellc.github.io/tideswellfc-legal</p>
+        </div>
+    </div>
+</body>
+</html>
